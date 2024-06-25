@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Land Method Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"], input[type="range"] {
+            width: 100%;
+        }
+        .result {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>The Land Method Calculator</h1>
+    <form id="calculatorForm">
+        <div class="form-group">
+            <label for="marketValue">Market Value:</label>
+            <input type="number" id="marketValue" required>
+        </div>
+        <div class="form-group">
+            <label for="delinquentTaxes">Delinquent Taxes and/or Liens:</label>
+            <input type="number" id="delinquentTaxes" required>
+        </div>
+        <div class="form-group">
+            <label for="minPercentage">Min Percentage:</label>
+            <input type="range" id="minPercentage" min="0" max="75" value="0">
+            <div class="slider-labels">
+                <span>0%</span>
+                <span>75%</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="maxPercentage">Max Percentage:</label>
+            <input type="range" id="maxPercentage" min="0" max="99" value="0">
+            <div class="slider-labels">
+                <span>0%</span>
+                <span>99%</span>
+            </div>
+        </div>
+    </form>
+
+    <div class="result">
+        <p>Offer Minimum: $<span id="offerMinimum">0</span></p>
+        <p>Offer Maximum: $<span id="offerMaximum">0</span></p>
+        <p>Net Minimum Offer: $<span id="netMinimumOffer">0</span></p>
+        <p>Net Maximum Offer: $<span id="netMaximumOffer">0</span></p>
+    </div>
+
+    <script>
+        const form = document.getElementById('calculatorForm');
+        const marketValue = document.getElementById('marketValue');
+        const delinquentTaxes = document.getElementById('delinquentTaxes');
+        const minPercentage = document.getElementById('minPercentage');
+        const maxPercentage = document.getElementById('maxPercentage');
+
+        const offerMinimum = document.getElementById('offerMinimum');
+        const offerMaximum = document.getElementById('offerMaximum');
+        const netMinimumOffer = document.getElementById('netMinimumOffer');
+        const netMaximumOffer = document.getElementById('netMaximumOffer');
+
+        function calculateOffers() {
+            const mv = parseFloat(marketValue.value) || 0;
+            const dt = parseFloat(delinquentTaxes.value) || 0;
+            const minP = parseFloat(minPercentage.value) || 0;
+            const maxP = parseFloat(maxPercentage.value) || 0;
+
+            const offerMin = (mv * minP) / 100;
+            const offerMax = (mv * maxP) / 100;
+            const netMin = Math.abs(offerMin - dt);
+            const netMax = Math.abs(offerMax - dt);
+
+            offerMinimum.textContent = offerMin.toFixed(2);
+            offerMaximum.textContent = offerMax.toFixed(2);
+            netMinimumOffer.textContent = netMin.toFixed(2);
+            netMaximumOffer.textContent = netMax.toFixed(2);
+        }
+
+        form.addEventListener('input', calculateOffers);
+
+        // Initial calculation
+        calculateOffers();
+    </script>
+</body>
+</html>
